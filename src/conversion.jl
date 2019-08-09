@@ -34,3 +34,10 @@ function Base.convert(::Type{MT}, t::AbstractTerm) where {MT<:AbstractMonomial}
         error("Cannot convert a term with a coefficient that is not one into a monomial")
     end
 end
+
+function Base.convert(T::Type{<:APL}, r::RationalPoly)
+    num, den = numerator(r), denominator(r)
+    !isconstant(den) && throw(InexactError(:convert, T, r))
+    lc = leadingcoefficient(den)
+    num / lc
+end

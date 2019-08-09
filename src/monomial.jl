@@ -86,6 +86,7 @@ end
 
 Returns whether the monomial of `t` is constant.
 """
+isconstant(p::AbstractPolynomialLike) = all(isconstant.(t) for t in terms(p))
 isconstant(t::AbstractTermLike) = all(iszero.(exponents(t)))
 isconstant(v::AbstractVariable) = false
 
