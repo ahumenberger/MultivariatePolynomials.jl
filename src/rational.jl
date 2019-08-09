@@ -1,13 +1,23 @@
 export RationalPoly
 
-# TODO We should take gcd between numerator and denominator
 struct RationalPoly{NT <: APL, DT <: APL}
     num::NT
     den::DT
+
+    function RationalPoly{NT,DT}(num::NT, den::DT) where {NT<:APL,DT<:APL}
+        num2, den2 = divgcd(num, den)
+        NT2, DT2 = typeof(num2), typeof(den2)
+        new{NT2,DT2}(num2, den2)
+    end
 end
 
 # This constructor is called from LinearAlgebra in the method Matrix{T}(s::UniformScaling{Bool}, dims)
 RationalPoly{NT,DT}(x::Bool) where {NT,DT} = ifelse(x, one(RationalPoly{NT,DT}), zero(RationalPoly{NT,DT}))
+
+function divgcd(x::NT, y::DT) where {NT<:APL,DT<:APL}
+    g = gcd(x, y)
+    div(x, g), div(y, g)
+end
 
 Base.numerator(r::RationalPoly) = r.num
 Base.denominator(r::RationalPoly) = r.den
